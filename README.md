@@ -23,13 +23,7 @@ docker-compose.yml
 ```bash
 docker compose up --build
 ```
-Se expondrán:
-- Gateway HTTP: http://localhost:8080
-- gRPC IpLocator: localhost:50051
-- gRPC Weather: localhost:50052
-
 ## Probar
-- **Salud:** `curl http://localhost:8080/health`
 - **Con IP explícita:** `curl "http://localhost:8080/weather?ip=1.1.1.1"`
 - **Sin IP:** `curl "http://localhost:8080/weather"` (usa la IP del cliente vista por el gateway; en local puede devolver una IP privada o 127.0.0.1, por lo que es preferible pasar `?ip=`).
 
@@ -49,19 +43,4 @@ Se expondrán:
     "time_iso": "2025-09-09T12:00"
   }
 }
-```
-
-## Notas de diseño
-- **gRPC proto único** compartido por los 3 servicios.
-- Los servicios Python generan stubs en tiempo de build con `grpcio-tools`.
-- El gateway exporta sólo **HTTP**, cumpliendo con el enunciado.
-- Manejo básico de errores y timeouts.
-- Se envía `x-forwarded-for` como metadata al IpLocator (opcional).
-
-## Extensiones sugeridas (opcionales)
-- Cache de respuestas (Redis) en el gateway.
-- Métricas/Tracing (Prometheus + OpenTelemetry).
-- Tests unitarios para cada servicio.
-- Agregar endpoint `/weather/by-location?lat=&lon=` directo (evita IP).
-- Agregar más variables meteorológicas desde Open‑Meteo.
 ```
