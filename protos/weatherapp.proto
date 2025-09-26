@@ -1,0 +1,50 @@
+syntax = "proto3";
+package weatherapp;
+
+// Messages
+message IPRequest {
+  string ip = 1; // If empty, services may treat it as "use caller IP"
+}
+
+message Location {
+  string ip = 1;
+  string city = 2;
+  string region = 3;
+  string country = 4;
+  double latitude = 5;
+  double longitude = 6;
+}
+
+message LocationResponse {
+  Location location = 1;
+  string error = 2; // empty if ok
+}
+
+message WeatherRequest {
+  double latitude = 1;
+  double longitude = 2;
+}
+
+message WeatherInfo {
+  double temperature_c = 1;
+  string unit = 2;
+  string source = 3;
+  string time_iso = 4;
+  double humidity = 5;
+  double precipitation = 6;
+  double apparent_temperature = 7;
+}
+
+message WeatherResponse {
+  WeatherInfo weather = 1;
+  string error = 2; // empty if ok
+}
+
+// Services
+service IpLocator {
+  rpc GetLocation(IPRequest) returns (LocationResponse);
+}
+
+service Weather {
+  rpc GetWeather(WeatherRequest) returns (WeatherResponse);
+}

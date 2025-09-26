@@ -1,0 +1,30 @@
+services:
+  ip-service:
+    build:
+      context: .
+      dockerfile: ip_service/Dockerfile
+    ports:
+      - "50051:50051"
+
+  weather-service:
+    build:
+      context: .
+      dockerfile: weather_service/Dockerfile
+    ports:
+      - "50052:50052"
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    container_name: weather_gateway
+    environment:
+      - IP_LOCATOR_ADDR=ip-service:50051
+      - WEATHER_ADDR=weather-service:50052
+      - PORT=8080
+    depends_on:
+      - ip-service
+      - weather-service
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
